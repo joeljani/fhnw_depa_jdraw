@@ -9,11 +9,13 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.util.ArrayList;
 import java.util.List;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import jdraw.framework.Figure;
+import jdraw.framework.FigureEvent;
 import jdraw.framework.FigureHandle;
 import jdraw.framework.FigureListener;
 
@@ -26,6 +28,7 @@ import jdraw.framework.FigureListener;
 public class Rect implements Figure {
 	private static final long serialVersionUID = 9120181044386552132L;
 
+	private final List<FigureListener> figureListeners = new ArrayList<>();
 	/**
 	 * Use the java.awt.Rectangle in order to save/reuse code.
 	 */
@@ -57,13 +60,18 @@ public class Rect implements Figure {
 	@Override
 	public void setBounds(Point origin, Point corner) {
 		rectangle.setFrameFromDiagonal(origin, corner);
-		// TODO notification of change
+		/* notification of change -> notify the registered figure listeners
+		   Find the registered listeners and push change with notify
+		 */
+		//notify
+		figureListeners.forEach(figureListener -> figureListener.figureChanged(new FigureEvent(this)));
 	}
 
 	@Override
 	public void move(int dx, int dy) {
 		rectangle.setLocation(rectangle.x + dx, rectangle.y + dy);
-		// TODO notification of change
+		//notify
+		figureListeners.forEach(figureListener -> figureListener.figureChanged(new FigureEvent(this)));
 	}
 
 	@Override
@@ -88,13 +96,12 @@ public class Rect implements Figure {
 
 	@Override
 	public void addFigureListener(FigureListener listener) {
-		// TODO Auto-generated method stub
-
+		if(!figureListeners.contains(listener)) figureListeners.add(listener);
 	}
 
 	@Override
 	public void removeFigureListener(FigureListener listener) {
-		// TODO Auto-generated method stub
+		figureListeners.remove(listener);
 	}
 
 	@Override
