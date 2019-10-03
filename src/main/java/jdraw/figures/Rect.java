@@ -11,6 +11,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
@@ -28,7 +29,7 @@ import jdraw.framework.FigureListener;
 public class Rect implements Figure {
 	private static final long serialVersionUID = 9120181044386552132L;
 
-	private final List<FigureListener> figureListeners = new ArrayList<>();
+	private final List<FigureListener> figureListeners = new CopyOnWriteArrayList<>();
 	/**
 	 * Use the java.awt.Rectangle in order to save/reuse code.
 	 */
@@ -60,18 +61,15 @@ public class Rect implements Figure {
 	@Override
 	public void setBounds(Point origin, Point corner) {
 		rectangle.setFrameFromDiagonal(origin, corner);
-		/* notification of change -> notify the registered figure listeners
-		   Find the registered listeners and push change with notify
-		 */
-		//notify
-		figureListeners.forEach(figureListener -> figureListener.figureChanged(new FigureEvent(this)));
+		notifyListeners();
 	}
 
 	@Override
 	public void move(int dx, int dy) {
-		rectangle.setLocation(rectangle.x + dx, rectangle.y + dy);
-		//notify
-		figureListeners.forEach(figureListener -> figureListener.figureChanged(new FigureEvent(this)));
+		if(!(dx == 0 && dy == 0)) {
+			rectangle.setLocation(rectangle.x + dx, rectangle.y + dy);
+			notifyListeners();
+		}
 	}
 
 	@Override
@@ -107,6 +105,10 @@ public class Rect implements Figure {
 	@Override
 	public Figure clone() {
 		return null;
+	}
+
+	private void notifyListeners() {
+		figureListeners.forEach(figureListener -> figureListener.figureChanged(new FigureEvent(this)));
 	}
 
 

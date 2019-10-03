@@ -6,8 +6,10 @@
 package jdraw.std;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Observer;
+import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -20,23 +22,18 @@ import jdraw.framework.*;
  * @author Joel Jani
  *
  */
-public class StdDrawModel implements DrawModel {
+public class StdDrawModel implements DrawModel, FigureListener {
 
 	private final List<Figure> figures = new ArrayList<>();
-	private final List<DrawModelListener> drawModelListeners = new ArrayList<>();
-
-	public int countListeners = 0;
+	private final List<DrawModelListener> drawModelListeners = new CopyOnWriteArrayList<>();
 
 
 	@Override
 	public void addFigure(Figure f) {
 		if(!figures.contains(f)) {
 			figures.add(f);
-			System.out.println(f.getBounds().x);
-			//notify
-			drawModelListeners.forEach(d -> d.modelChanged(new DrawModelEvent(this, f, DrawModelEvent.Type.FIGURE_ADDED)));
-			this.countListeners++;
-			System.out.println("countlisteners: " + countListeners);
+			f.addFigureListener(this);
+			notifyListeners(f, DrawModelEvent.Type.FIGURE_ADDED);
 		}
 	}
 
@@ -49,8 +46,8 @@ public class StdDrawModel implements DrawModel {
 	public void removeFigure(Figure f) {
 		if(figures.contains(f)) {
 			figures.remove(f);
-			//notify
-			drawModelListeners.forEach(d -> d.modelChanged(new DrawModelEvent(this, f, DrawModelEvent.Type.FIGURE_REMOVED)));
+			f.removeFigureListener(this);
+			notifyListeners(f, DrawModelEvent.Type.FIGURE_REMOVED);
 		}
 	}
 
@@ -79,17 +76,39 @@ public class StdDrawModel implements DrawModel {
 
 	@Override
 	public void setFigureIndex(Figure f, int index) {
+		if(!figures.contains(f)) throw new IllegalArgumentException("Figure f doesn't exist");
+		if(index < 0 || index >= figures.size()) throw new IndexOutOfBoundsException("Index doesn't match with amount of figures");
+
+		int indexOfFigureToChange = 0;
+		while(!figures.get(indexOfFigureToChange).equals(f)) {
+			indexOfFigureToChange++;
+		}
+
+		//Verschiebung der Inhalte des Arrays
+		for (int i = indexOfFigureToChange-1; i >= index; i--) {
+			int j = i + 1;
+			figures.set(j, figures.get(i));
+		}
+
 		figures.set(index, f);
-		//notify
-		drawModelListeners.forEach(d -> d.modelChanged(new DrawModelEvent(this, f, DrawModelEvent.Type.FIGURE_CHANGED)));
+		notifyListeners(f, DrawModelEvent.Type.DRAWING_CHANGED);
 	}
 
 	@Override
 	public void removeAllFigures() {
+		for (Figure f: figures) {
+			f.removeFigureListener(this);
+		}
 		figures.clear();
-		//notify
-		drawModelListeners.forEach(d -> d.modelChanged(new DrawModelEvent(this, null, DrawModelEvent.Type.DRAWING_CLEARED)));
-		//drawModelListeners.clear();
+		notifyListeners(null, DrawModelEvent.Type.DRAWING_CLEARED);
 	}
 
+	private void notifyListeners(Figure f, DrawModelEvent.Type type) {
+		drawModelListeners.forEach(d -> d.modelChanged(new DrawModelEvent(this, f, type)));
+	}
+
+	@Override
+	public void figureChanged(FigureEvent e) {
+
+	}
 }
