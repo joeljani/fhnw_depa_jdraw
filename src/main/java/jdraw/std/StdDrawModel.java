@@ -109,6 +109,6 @@ public class StdDrawModel implements DrawModel, FigureListener {
 
 	@Override
 	public void figureChanged(FigureEvent e) {
-
+		notifyListeners(e.getFigure(), DrawModelEvent.Type.FIGURE_CHANGED);
 	}
 }
