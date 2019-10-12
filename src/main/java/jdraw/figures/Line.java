@@ -17,7 +17,7 @@ public class Line implements Figure {
 
     private final Line2D line2D;
 
-    public Line(int x, int y, int dx, int dy) {
+    public Line(int x, int y, int widthx, int widthy) {
         this.line2D = new Line2D.Float(0, 0, 0, 0);
      }
 

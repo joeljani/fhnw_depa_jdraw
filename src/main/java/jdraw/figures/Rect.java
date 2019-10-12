@@ -5,20 +5,7 @@
 
 package jdraw.figures;
 
-import java.awt.Color;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.concurrent.CopyOnWriteArrayList;
-
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
-import jdraw.framework.Figure;
-import jdraw.framework.FigureEvent;
-import jdraw.framework.FigureHandle;
-import jdraw.framework.FigureListener;
+import java.awt.*;
 
 /**
  * Represents rectangles in JDraw.
@@ -26,15 +13,9 @@ import jdraw.framework.FigureListener;
  * @author Christoph Denzler
  *
  */
-public class Rect implements Figure {
+public class Rect extends AbstractRectangularShapedFigure {
 	private static final long serialVersionUID = 9120181044386552132L;
 
-	private final List<FigureListener> figureListeners = new CopyOnWriteArrayList<>();
-	/**
-	 * Use the java.awt.Rectangle in order to save/reuse code.
-	 */
-	private final Rectangle rectangle;
-	
 	/**
 	 * Create a new rectangle of the given dimension.
 	 * @param x the x-coordinate of the upper left corner of the rectangle
@@ -43,7 +24,7 @@ public class Rect implements Figure {
 	 * @param h the rectangle's height
 	 */
 	public Rect(int x, int y, int w, int h) {
-		rectangle = new Rectangle(x, y, w, h);
+		super(new Rectangle(x,y,w,h));
 	}
 
 	/**
@@ -53,63 +34,9 @@ public class Rect implements Figure {
 	@Override
 	public void draw(Graphics g) {
 		g.setColor(Color.WHITE);
-		g.fillRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+		g.fillRect((int) getShape().getX(),(int) getShape().getY(),(int) getShape().getWidth(),(int) getShape().getHeight());
 		g.setColor(Color.BLACK);
-		g.drawRect(rectangle.x, rectangle.y, rectangle.width, rectangle.height);
+		g.drawRect((int) getShape().getX(),(int) getShape().getY(),(int) getShape().getWidth(),(int) getShape().getHeight());
 	}
-	
-	@Override
-	public void setBounds(Point origin, Point corner) {
-		rectangle.setFrameFromDiagonal(origin, corner);
-		notifyListeners();
-	}
-
-	@Override
-	public void move(int dx, int dy) {
-		if(!(dx == 0 && dy == 0)) {
-			rectangle.setLocation(rectangle.x + dx, rectangle.y + dy);
-			notifyListeners();
-		}
-	}
-
-	@Override
-	public boolean contains(int x, int y) {
-		return rectangle.contains(x, y);
-	}
-
-	@Override
-	public Rectangle getBounds() {
-		return rectangle.getBounds();
-	}
-
-	/**
-	 * Returns a list of 8 handles for this Rectangle.
-	 * @return all handles that are attached to the targeted figure.
-	 * @see jdraw.framework.Figure#getHandles()
-	 */	
-	@Override
-	public List<FigureHandle> getHandles() {
-		return null;
-	}
-
-	@Override
-	public void addFigureListener(FigureListener listener) {
-		if(!figureListeners.contains(listener)) figureListeners.add(listener);
-	}
-
-	@Override
-	public void removeFigureListener(FigureListener listener) {
-		figureListeners.remove(listener);
-	}
-
-	@Override
-	public Figure clone() {
-		return null;
-	}
-
-	private void notifyListeners() {
-		figureListeners.forEach(figureListener -> figureListener.figureChanged(new FigureEvent(this)));
-	}
-
 
 }
