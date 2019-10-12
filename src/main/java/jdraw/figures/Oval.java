@@ -7,7 +7,6 @@ import jdraw.framework.FigureListener;
 
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
-import java.awt.geom.Point2D;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -24,12 +23,14 @@ public class Oval implements Figure {
     public void draw(Graphics g) {
         g.setColor(Color.BLACK);
         g.drawRoundRect((int) ellipse2D.getX(), (int) ellipse2D.getY(), (int) ellipse2D.getWidth(), (int) ellipse2D.getHeight(), (int) ellipse2D.getWidth() + 100, (int) ellipse2D.getHeight() + 100);
+        System.out.println(ellipse2D.getWidth());
     }
 
     @Override
     public void move(int dx, int dy) {
+        //TODO: weird things happening when moving
         if(!(dx == 0 && dy == 0)) {
-            ellipse2D.setFrame(new Point2D.Double(ellipse2D.getX(), ellipse2D.getY()), new Dimension(dx, dy));
+            ellipse2D.setFrame(new Point((int) (ellipse2D.getX() + dx), (int) (ellipse2D.getY() + dy)) , new Dimension((int) ellipse2D.getHeight(), (int)ellipse2D.getWidth()));
             notifyListeners();
         }
     }

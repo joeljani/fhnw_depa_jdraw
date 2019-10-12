@@ -76,6 +76,7 @@ public class StdDrawModel implements DrawModel, FigureListener {
 
 	@Override
 	public void setFigureIndex(Figure f, int index) {
+
 		if(!figures.contains(f)) throw new IllegalArgumentException("Figure f doesn't exist");
 		if(index < 0 || index >= figures.size()) throw new IndexOutOfBoundsException("Index doesn't match with amount of figures");
 
@@ -84,7 +85,7 @@ public class StdDrawModel implements DrawModel, FigureListener {
 			indexOfFigureToChange++;
 		}
 
-		//Verschiebung der Inhalte des Arrays
+		//Verschiebung der Indizes der Figuren
 		for (int i = indexOfFigureToChange-1; i >= index; i--) {
 			int j = i + 1;
 			figures.set(j, figures.get(i));
