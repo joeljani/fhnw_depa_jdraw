@@ -3,23 +3,21 @@ package jdraw.figures.handles;
 import jdraw.figures.AbstractFigure;
 import jdraw.framework.DrawView;
 import jdraw.framework.Figure;
-import jdraw.framework.FigureHandle;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class NorthWestHandle implements FigureHandle {
+public class NorthWestHandle extends AbstractFigureHandle {
 
-    private AbstractFigure figure;
     private Point corner;
 
     public NorthWestHandle(AbstractFigure figure) {
-        this.figure = figure;
+        super(figure);
     }
 
     @Override
     public Figure getOwner() {
-        return this.figure;
+        return getFigure();
     }
 
     @Override
@@ -38,6 +36,10 @@ public class NorthWestHandle implements FigureHandle {
 
     @Override
     public Cursor getCursor() {
+        if(getState().isSwitched()) {
+            getState().doSwitch(this);
+            return Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR);
+        }
         return Cursor.getPredefinedCursor(Cursor.NW_RESIZE_CURSOR);
     }
 
@@ -56,6 +58,10 @@ public class NorthWestHandle implements FigureHandle {
     @Override
     public void dragInteraction(int x, int y, MouseEvent e, DrawView v) {
         getOwner().setBounds(new Point(x,y), corner);
+        Point southEastPoint = new Point(getOwner().getBounds().x + getOwner().getBounds().width, getOwner().getBounds().y + getOwner().getBounds().height);
+        if(new Point(x,y).equals(southEastPoint)) {
+            getState().doSwitch(this);
+        }
     }
 
     @Override
