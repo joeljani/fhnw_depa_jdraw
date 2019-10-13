@@ -8,24 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class OvalTool implements DrawTool {
-
-
-    /**
-     * the image resource path.
-     */
-    private static final String IMAGES = "/images/";
-
-    /**
-     * The context we use for drawing.
-     */
-    private final DrawContext context;
-
-    /**
-     * The context's view. This variable can be used as a shortcut, i.e.
-     * instead of calling context.getView().
-     */
-    private final DrawView view;
+public class OvalTool extends AbstractTool {
 
     /**
      * Temporary variable. During rectangle creation (during a
@@ -45,29 +28,8 @@ public class OvalTool implements DrawTool {
      * Create a new rectangle tool for the given context.
      * @param context a context to use this tool in.
      */
-    public OvalTool(DrawContext context) {
-        this.context = context;
-        this.view = context.getView();
-    }
-
-    /**
-     * Deactivates the current mode by resetting the cursor
-     * and clearing the status bar.
-     * @see jdraw.framework.DrawTool#deactivate()
-     */
-    @Override
-    public void deactivate() {
-        this.context.showStatusText("");
-    }
-
-    /**
-     * Activates the Rectangle Mode. There will be a
-     * specific menu added to the menu bar that provides settings for
-     * Rectangle attributes
-     */
-    @Override
-    public void activate() {
-        this.context.showStatusText("Oval Mode");
+    public OvalTool(DrawContext context, String toolName, String imageName) {
+        super(context, toolName, imageName);
     }
 
     /**
@@ -87,7 +49,7 @@ public class OvalTool implements DrawTool {
         }
         anchor = new Point(x, y);
         newOval = new Oval(x, y, 0, 0);
-        view.getModel().addFigure(newOval);
+        getView().getModel().addFigure(newOval);
     }
 
     /**
@@ -121,21 +83,7 @@ public class OvalTool implements DrawTool {
     public void mouseUp(int x, int y, MouseEvent e) {
         newOval = null;
         anchor = null;
-        this.context.showStatusText("Oval Mode");
+        getContext().showStatusText("Oval Mode");
     }
 
-    @Override
-    public Cursor getCursor() {
-        return Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
-    }
-
-    @Override
-    public Icon getIcon() {
-        return new ImageIcon(getClass().getResource(IMAGES + "oval.png"));
-    }
-
-    @Override
-    public String getName() {
-        return "Oval";
-    }
 }

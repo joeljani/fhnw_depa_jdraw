@@ -51,7 +51,7 @@ public abstract class AbstractTool implements DrawTool {
      */
     @Override
     public void activate() {
-        getContext().showStatusText("Rectangle Mode");
+        getContext().showStatusText(toolName + " Mode");
     }
 
     /**

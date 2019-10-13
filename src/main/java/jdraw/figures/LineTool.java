@@ -23,23 +23,7 @@ import jdraw.framework.DrawView;
  *
  * @author  Joel Jani
  */
-public class LineTool implements DrawTool {
-
-    /**
-     * the image resource path.
-     */
-    private static final String IMAGES = "/images/";
-
-    /**
-     * The context we use for drawing.
-     */
-    private final DrawContext context;
-
-    /**
-     * The context's view. This variable can be used as a shortcut, i.e.
-     * instead of calling context.getView().
-     */
-    private final DrawView view;
+public class LineTool extends AbstractTool {
 
     /**
      * Temporary variable. During rectangle creation (during a
@@ -59,29 +43,8 @@ public class LineTool implements DrawTool {
      * Create a new rectangle tool for the given context.
      * @param context a context to use this tool in.
      */
-    public LineTool(DrawContext context) {
-        this.context = context;
-        this.view = context.getView();
-    }
-
-    /**
-     * Deactivates the current mode by resetting the cursor
-     * and clearing the status bar.
-     * @see jdraw.framework.DrawTool#deactivate()
-     */
-    @Override
-    public void deactivate() {
-        this.context.showStatusText("");
-    }
-
-    /**
-     * Activates the Rectangle Mode. There will be a
-     * specific menu added to the menu bar that provides settings for
-     * Rectangle attributes
-     */
-    @Override
-    public void activate() {
-        this.context.showStatusText("Line Mode");
+    public LineTool(DrawContext context, String toolName, String imageName) {
+        super(context, toolName, imageName);
     }
 
     /**
@@ -101,7 +64,7 @@ public class LineTool implements DrawTool {
         }
         anchor = new Point(x, y);
         newLine = new Line(x, y, 0, 0);
-        view.getModel().addFigure(newLine);
+        getView().getModel().addFigure(newLine);
     }
 
     /**
@@ -118,7 +81,7 @@ public class LineTool implements DrawTool {
     @Override
     public void mouseDrag(int x, int y, MouseEvent e) {
         newLine.setBounds(anchor, new Point(x, y));
-        this.context.showStatusText("w: " + newLine.getBounds().getLocation().getX() + ", h: " + newLine.getBounds().getLocation().getY());
+        getContext().showStatusText("w: " + newLine.getBounds().getLocation().getX() + ", h: " + newLine.getBounds().getLocation().getY());
     }
 
     /**
@@ -136,22 +99,7 @@ public class LineTool implements DrawTool {
     public void mouseUp(int x, int y, MouseEvent e) {
         newLine = null;
         anchor = null;
-        this.context.showStatusText("Line Mode");
-    }
-
-    @Override
-    public Cursor getCursor() {
-        return Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
-    }
-
-    @Override
-    public Icon getIcon() {
-        return new ImageIcon(getClass().getResource(IMAGES + "line.png"));
-    }
-
-    @Override
-    public String getName() {
-        return "Line";
+        getContext().showStatusText("Line Mode");
     }
 
 }
