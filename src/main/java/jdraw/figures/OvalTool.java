@@ -1,10 +1,7 @@
 package jdraw.figures;
 
 import jdraw.framework.DrawContext;
-import jdraw.framework.DrawTool;
-import jdraw.framework.DrawView;
 
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 

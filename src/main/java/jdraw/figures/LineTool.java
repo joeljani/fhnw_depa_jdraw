@@ -5,16 +5,10 @@
 
 package jdraw.figures;
 
-import java.awt.Cursor;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-
 import jdraw.framework.DrawContext;
-import jdraw.framework.DrawTool;
-import jdraw.framework.DrawView;
+
+import java.awt.*;
+import java.awt.event.MouseEvent;
 
 /**
  * This tool defines a mode for drawing a line.

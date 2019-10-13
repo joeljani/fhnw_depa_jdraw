@@ -21,6 +21,8 @@ public abstract class AbstractRectangularShapedFigure extends AbstractFigure {
         }
     }
 
+
+
     @Override
     public void setBounds(Point origin, Point corner) {
         getShape().setFrameFromDiagonal(origin, corner);

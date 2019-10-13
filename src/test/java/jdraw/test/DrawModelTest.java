@@ -1,26 +1,19 @@
 package jdraw.test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import jdraw.figures.AbstractFigure;
+import jdraw.figures.Rect;
+import jdraw.framework.*;
+import jdraw.std.StdDrawModel;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
-import java.awt.Graphics;
-import java.awt.Point;
+import java.awt.*;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.StreamSupport;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import jdraw.framework.DrawModel;
-import jdraw.framework.DrawModelEvent;
-import jdraw.framework.Figure;
-import jdraw.framework.FigureHandle;
-import jdraw.framework.FigureListener;
-import jdraw.std.StdDrawModel;
+import static org.junit.jupiter.api.Assertions.*;
 
 @SuppressWarnings("serial")
 public class DrawModelTest {
@@ -284,6 +277,22 @@ public class DrawModelTest {
 			StreamSupport.stream(m.getFigures().spliterator(), false).anyMatch(f -> f == f2),
 			"in case that an IndexOutOfBoundsException occurs, the figure must not be removed from the model"
 		);
+	}
+
+	/**************** HANDLE TESTS *****************/
+
+	@Test
+	public void testGetLocation() {
+		AbstractFigure f1 = new Rect(1,2,3,4);
+		m.addFigure(f1);
+		assertEquals(new Point(1,2), f1.getHandles().get(0).getLocation());
+	}
+
+	@Test
+	public void testGetCorrectFigure() {
+		AbstractFigure f1 = new Rect(1,2,3,4);
+		m.addFigure(f1);
+		assertEquals(f1, f1.getHandles().get(0).getOwner());
 	}
 
 }
