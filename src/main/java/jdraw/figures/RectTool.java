@@ -6,8 +6,6 @@
 package jdraw.figures;
 
 import jdraw.framework.DrawContext;
-import jdraw.framework.DrawTool;
-import jdraw.framework.DrawView;
 
 import javax.swing.*;
 import java.awt.*;
@@ -20,23 +18,8 @@ import java.awt.event.MouseEvent;
  *
  * @author  Christoph Denzler
  */
-public class RectTool implements DrawTool {
-  
-	/** 
-	 * the image resource path. 
-	 */
-	private static final String IMAGES = "/images/";
+public class RectTool extends AbstractTool {
 
-	/**
-	 * The context we use for drawing.
-	 */
-	private final DrawContext context;
-
-	/**
-	 * The context's view. This variable can be used as a shortcut, i.e.
-	 * instead of calling context.getView().
-	 */
-	private final DrawView view;
 
 	/**
 	 * Temporary variable. During rectangle creation (during a
@@ -56,30 +39,10 @@ public class RectTool implements DrawTool {
 	 * Create a new rectangle tool for the given context.
 	 * @param context a context to use this tool in.
 	 */
-	public RectTool(DrawContext context) {
-		this.context = context;
-		this.view = context.getView();
+	public RectTool(DrawContext context, String toolName, String imageName) {
+		super(context, toolName, imageName);
 	}
 
-	/**
-	 * Deactivates the current mode by resetting the cursor
-	 * and clearing the status bar.
-	 * @see jdraw.framework.DrawTool#deactivate()
-	 */
-	@Override
-	public void deactivate() {
-		this.context.showStatusText("");
-	}
-
-	/**
-	 * Activates the Rectangle Mode. There will be a
-	 * specific menu added to the menu bar that provides settings for
-	 * Rectangle attributes
-	 */
-	@Override
-	public void activate() {
-		this.context.showStatusText("Rectangle Mode");
-	}
 
 	/**
 	 * Initializes a new Rectangle object by setting an anchor
@@ -98,7 +61,7 @@ public class RectTool implements DrawTool {
 		}
 		anchor = new Point(x, y);
 		newRect = new Rect(x, y, 0, 0);
-		view.getModel().addFigure(newRect);
+		getView().getModel().addFigure(newRect);
 	}
 
 	/**
@@ -133,22 +96,8 @@ public class RectTool implements DrawTool {
 	public void mouseUp(int x, int y, MouseEvent e) {
 		newRect = null;
 		anchor = null;
-		this.context.showStatusText("Rectangle Mode");
+		getContext().showStatusText("Rectangle Mode");
 	}
 
-	@Override
-	public Cursor getCursor() {
-		return Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR);
-	}
-	
-	@Override
-	public Icon getIcon() {
-		return new ImageIcon(getClass().getResource(IMAGES + "rectangle.png"));
-	}
-
-	@Override
-	public String getName() {
-		return "Rectangle";
-	}
 
 }
