@@ -1,6 +1,7 @@
 package jdraw.figures;
 
 import jdraw.figures.handles.NorthWestHandle;
+import jdraw.figures.handles.SouthEastHandle;
 import jdraw.framework.Figure;
 import jdraw.framework.FigureEvent;
 import jdraw.framework.FigureHandle;
@@ -43,11 +44,18 @@ public abstract class AbstractFigure implements Figure {
     @Override
     public List<FigureHandle> getHandles() {
         int counter = 0;
-        while (figureHandles.size() > 0 && !(figureHandles.get(counter) instanceof NorthWestHandle)) {
+        while (figureHandles.size() > counter && !(figureHandles.get(counter) instanceof NorthWestHandle)) {
             counter++;
         }
         if (counter == figureHandles.size()) {
             figureHandles.add(new NorthWestHandle(this));
+        }
+        int counter1 = 0;
+        while (figureHandles.size() > counter1 && !(figureHandles.get(counter1) instanceof SouthEastHandle)) {
+            counter1++;
+        }
+        if (counter1 == figureHandles.size()) {
+            figureHandles.add(new SouthEastHandle(this));
         }
         return this.figureHandles;
     }
