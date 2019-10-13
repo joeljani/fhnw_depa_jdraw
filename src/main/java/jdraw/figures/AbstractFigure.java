@@ -18,6 +18,8 @@ public abstract class AbstractFigure implements Figure {
         this.shape = shape;
     }
 
+    public AbstractFigure() {}
+
     public abstract Shape getShape();
 
     @Override

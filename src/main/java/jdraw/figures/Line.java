@@ -1,19 +1,11 @@
 package jdraw.figures;
 
-import jdraw.framework.Figure;
-import jdraw.framework.FigureEvent;
-import jdraw.framework.FigureHandle;
-import jdraw.framework.FigureListener;
 
 import java.awt.*;
 import java.awt.geom.Point2D;
-import java.util.List;
 import java.awt.geom.Line2D;
-import java.util.concurrent.CopyOnWriteArrayList;
 
-public class Line implements Figure {
-
-    private final List<FigureListener> figureListeners = new CopyOnWriteArrayList<>();
+public class Line extends AbstractFigure {
 
     private final Line2D line2D;
 
@@ -36,8 +28,8 @@ public class Line implements Figure {
     }
 
     @Override
-    public boolean contains(int x, int y) {
-        return line2D.contains(x,y);
+    public Shape getShape() {
+        return this.line2D;
     }
 
     @Override
@@ -46,33 +38,4 @@ public class Line implements Figure {
         notifyListeners();
     }
 
-    @Override
-    public Rectangle getBounds() {
-        return this.line2D.getBounds();
-    }
-
-    @Override
-    public List<FigureHandle> getHandles() {
-        return null;
-    }
-
-    @Override
-    public void addFigureListener(FigureListener listener) {
-        if(!figureListeners.contains(listener)) figureListeners.add(listener);
-    }
-
-    @Override
-    public void removeFigureListener(FigureListener listener) {
-        figureListeners.remove(listener);
-    }
-
-    @Override
-    public Figure clone() {
-        return null;
-    }
-
-
-    private void notifyListeners() {
-        figureListeners.forEach(figureListener -> figureListener.figureChanged(new FigureEvent(this)));
-    }
 }

@@ -88,7 +88,6 @@ public class DrawModelTest {
 		m.addFigure(f);
 		Iterator<Figure> it = m.getFigures().iterator();
 		it.next();
-		System.out.println("count:" + m.getFigures().count());
 		assertFalse(it.hasNext(), "figures in the model should be unique");
 	}
 
