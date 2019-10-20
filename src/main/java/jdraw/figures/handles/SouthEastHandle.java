@@ -37,10 +37,6 @@ public class SouthEastHandle extends AbstractFigureHandle {
 
     @Override
     public Cursor getCursor() {
-        if(getState().isSwitched()) {
-            getState().doSwitch(this);
-            return Cursor.getPredefinedCursor(Cursor.NW_RESIZE_CURSOR);
-        }
         return Cursor.getPredefinedCursor(Cursor.SE_RESIZE_CURSOR);
     }
 
@@ -61,9 +57,6 @@ public class SouthEastHandle extends AbstractFigureHandle {
     @Override
     public void dragInteraction(int x, int y, MouseEvent e, DrawView v) {
         getOwner().setBounds(new Point(x,y), corner);
-        if(getOwner().getBounds().getLocation().equals(new Point(x,y))) {
-            getState().doSwitch(this);
-        }
     }
 
     @Override

@@ -25,6 +25,7 @@ public abstract class AbstractRectangularShapedFigure extends AbstractFigure {
 
     @Override
     public void setBounds(Point origin, Point corner) {
+        //TODO: Überprüfen ob was verändert wurde
         getShape().setFrameFromDiagonal(origin, corner);
         notifyListeners();
     }

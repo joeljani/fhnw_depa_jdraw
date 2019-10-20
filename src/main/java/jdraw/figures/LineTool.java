@@ -18,6 +18,8 @@ import java.awt.event.MouseEvent;
  * @author  Joel Jani
  */
 public class LineTool extends AbstractTool {
+    //TODO: AbstractDragDrawTool
+
 
     /**
      * Temporary variable. During rectangle creation (during a

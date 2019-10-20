@@ -7,11 +7,11 @@ import jdraw.framework.Figure;
 import java.awt.*;
 import java.awt.event.MouseEvent;
 
-public class NorthWestHandle extends AbstractFigureHandle {
+public class NorthEastHandle extends AbstractFigureHandle{
 
     private Point corner;
 
-    public NorthWestHandle(AbstractFigure figure) {
+    public NorthEastHandle(AbstractFigure figure) {
         super(figure);
     }
 
@@ -27,34 +27,33 @@ public class NorthWestHandle extends AbstractFigureHandle {
 
     @Override
     public void draw(Graphics g) {
-        Point loc = getLocation();
+        Point northEastPoint = new Point(getOwner().getBounds().x + getOwner().getBounds().width, getOwner().getBounds().y);
         g.setColor(Color.WHITE);
-        g.fillRect(loc.x-3, loc.y -3, 10,10);
+        g.fillRect(northEastPoint.x-3, northEastPoint.y -3, 10,10);
         g.setColor(Color.BLACK);
-        g.drawRect(loc.x-3, loc.y -3, 10,10);
+        g.drawRect(northEastPoint.x-3, northEastPoint.y -3, 10,10);
     }
 
     @Override
     public Cursor getCursor() {
-        return Cursor.getPredefinedCursor(Cursor.NW_RESIZE_CURSOR);
+        return Cursor.getPredefinedCursor(Cursor.NE_RESIZE_CURSOR);
     }
 
     @Override
     public boolean contains(int x, int y) {
-        Rectangle rectangle = new Rectangle(getLocation().x, getLocation().y, 10, 10);
+        Point northEastPoint = new Point(getOwner().getBounds().x + getOwner().getBounds().width, getOwner().getBounds().y);
+        Rectangle rectangle = new Rectangle(northEastPoint.x, northEastPoint.y, 10, 10);
         return rectangle.contains(x,y);
     }
 
     @Override
     public void startInteraction(int x, int y, MouseEvent e, DrawView v) {
-        corner = new Point(getOwner().getBounds().x + getOwner().getBounds().width,
-                           getOwner().getBounds().y + getOwner().getBounds().height);
+        corner = new Point(getOwner().getBounds().x, getOwner().getBounds().y + getOwner().getBounds().height);
     }
 
     @Override
     public void dragInteraction(int x, int y, MouseEvent e, DrawView v) {
         getOwner().setBounds(new Point(x,y), corner);
-        System.out.println(getLocation().x + " " + getLocation().y);
     }
 
     @Override
