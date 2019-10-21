@@ -125,6 +125,14 @@ public class StdContext extends AbstractContext {
         JMenu grid = new JMenu("Grid...");
         JMenuItem simpleGrid = new JMenuItem("Simple Grid");
         simpleGrid.addActionListener(e -> getView().setGrid(new SimpleGrid()));
+
+
+        JRadioButtonMenuItem noGrid = new JRadioButtonMenuItem("Kein Grid");
+        noGrid.addActionListener(actionEvent -> {
+            getView().setGrid(null);
+        });
+
+        grid.add(noGrid);
         grid.add(simpleGrid);
         grid.add("Grid 2");
         grid.add("Grid 3");

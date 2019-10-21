@@ -6,6 +6,8 @@ import java.awt.*;
 
 public class SimpleGrid implements DrawGrid {
 
+    private int step;
+
     @Override
     public Point constrainPoint(Point p) {
         System.out.println("SimpleGrid:constrainPoint: " + p);
@@ -15,13 +17,15 @@ public class SimpleGrid implements DrawGrid {
     @Override
     public int getStepX(boolean right) {
         System.out.println("getStepX called");
-        return 1;
+        step = 20;
+        return step;
     }
 
     @Override
     public int getStepY(boolean down) {
         System.out.println("getStepY called");
-        return 1;
+        step = 20;
+        return step;
     }
 
     @Override
