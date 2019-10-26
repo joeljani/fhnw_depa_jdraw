@@ -10,6 +10,7 @@ import jdraw.figures.RectTool;
 import jdraw.framework.*;
 import jdraw.grid.Grid20;
 import jdraw.grid.Grid50;
+import jdraw.grid.SnapGrid;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
@@ -126,12 +127,14 @@ public class StdContext extends AbstractContext {
 
         JMenu grid = new JMenu("Grid...");
 
-
         JRadioButtonMenuItem grid20 = new JRadioButtonMenuItem("Grid20");
         grid20.addActionListener(e -> getView().setGrid(new Grid20()));
 
         JRadioButtonMenuItem grid50 = new JRadioButtonMenuItem("Grid50");
         grid50.addActionListener(e -> getView().setGrid(new Grid50()));
+
+        JRadioButtonMenuItem snapGrid = new JRadioButtonMenuItem("SnapGrid");
+        snapGrid.addActionListener(e -> getView().setGrid(new SnapGrid(this)));
 
         JRadioButtonMenuItem noGrid = new JRadioButtonMenuItem("Kein Grid");
         noGrid.addActionListener(e -> getView().setGrid(null));
@@ -139,16 +142,19 @@ public class StdContext extends AbstractContext {
         ArrayList<JRadioButtonMenuItem> grids = new ArrayList<>();
         grids.add(grid20);
         grids.add(grid50);
+        grids.add(snapGrid);
         grids.add(noGrid);
 
         grid20.addActionListener(e -> grids.stream().filter(g -> g.getText() != "Grid20").forEach(g -> g.setSelected(false)));
         grid50.addActionListener(e -> grids.stream().filter(g -> g.getText() != "Grid50").forEach(g -> g.setSelected(false)));
+        snapGrid.addActionListener(e -> grids.stream().filter(g -> g.getText() != "SnapGrid").forEach(g -> g.setSelected(false)));
         noGrid.addActionListener(e -> grids.stream().filter(g -> g.getText() != "Kein Grid").forEach(g -> g.setSelected(false)));
 
 
         grid.add(noGrid);
         grid.add(grid20);
         grid.add(grid50);
+        grid.add(snapGrid);
         editMenu.add(grid);
 
         return editMenu;
