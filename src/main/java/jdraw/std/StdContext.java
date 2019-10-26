@@ -8,12 +8,15 @@ import jdraw.figures.LineTool;
 import jdraw.figures.OvalTool;
 import jdraw.figures.RectTool;
 import jdraw.framework.*;
-import jdraw.grid.SimpleGrid;
+import jdraw.grid.Grid20;
+import jdraw.grid.Grid50;
+import jdraw.grid.SnapGrid;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -123,19 +126,35 @@ public class StdContext extends AbstractContext {
         editMenu.add(orderMenu);
 
         JMenu grid = new JMenu("Grid...");
-        JMenuItem simpleGrid = new JMenuItem("Simple Grid");
-        simpleGrid.addActionListener(e -> getView().setGrid(new SimpleGrid()));
 
+        JRadioButtonMenuItem grid20 = new JRadioButtonMenuItem("Grid20");
+        grid20.addActionListener(e -> getView().setGrid(new Grid20()));
+
+        JRadioButtonMenuItem grid50 = new JRadioButtonMenuItem("Grid50");
+        grid50.addActionListener(e -> getView().setGrid(new Grid50()));
+
+        JRadioButtonMenuItem snapGrid = new JRadioButtonMenuItem("SnapGrid");
+        snapGrid.addActionListener(e -> getView().setGrid(new SnapGrid(this)));
 
         JRadioButtonMenuItem noGrid = new JRadioButtonMenuItem("Kein Grid");
-        noGrid.addActionListener(actionEvent -> {
-            getView().setGrid(null);
-        });
+        noGrid.addActionListener(e -> getView().setGrid(null));
+
+        ArrayList<JRadioButtonMenuItem> grids = new ArrayList<>();
+        grids.add(grid20);
+        grids.add(grid50);
+        grids.add(snapGrid);
+        grids.add(noGrid);
+
+        grid20.addActionListener(e -> grids.stream().filter(g -> g.getText() != "Grid20").forEach(g -> g.setSelected(false)));
+        grid50.addActionListener(e -> grids.stream().filter(g -> g.getText() != "Grid50").forEach(g -> g.setSelected(false)));
+        snapGrid.addActionListener(e -> grids.stream().filter(g -> g.getText() != "SnapGrid").forEach(g -> g.setSelected(false)));
+        noGrid.addActionListener(e -> grids.stream().filter(g -> g.getText() != "Kein Grid").forEach(g -> g.setSelected(false)));
+
 
         grid.add(noGrid);
-        grid.add(simpleGrid);
-        grid.add("Grid 2");
-        grid.add("Grid 3");
+        grid.add(grid20);
+        grid.add(grid50);
+        grid.add(snapGrid);
         editMenu.add(grid);
 
         return editMenu;

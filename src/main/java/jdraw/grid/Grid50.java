@@ -4,7 +4,7 @@ import jdraw.framework.DrawGrid;
 
 import java.awt.*;
 
-public class SimpleGrid implements DrawGrid {
+public class Grid50 implements DrawGrid {
 
     private int step;
 
@@ -17,14 +17,14 @@ public class SimpleGrid implements DrawGrid {
     @Override
     public int getStepX(boolean right) {
         System.out.println("getStepX called");
-        step = 20;
+        step = 50;
         return step;
     }
 
     @Override
     public int getStepY(boolean down) {
         System.out.println("getStepY called");
-        step = 20;
+        step = 50;
         return step;
     }
 
