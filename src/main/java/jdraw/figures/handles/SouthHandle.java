@@ -1,6 +1,5 @@
 package jdraw.figures.handles;
 
-import jdraw.figures.AbstractFigure;
 import jdraw.framework.DrawView;
 import jdraw.framework.Figure;
 
@@ -12,7 +11,7 @@ public class SouthHandle extends AbstractFigureHandle {
     private Point corner;
     private Point southPoint;
 
-    public SouthHandle(AbstractFigure figure) {
+    public SouthHandle(Figure figure) {
         super(figure);
     }
 
@@ -31,7 +30,6 @@ public class SouthHandle extends AbstractFigureHandle {
     public void draw(Graphics g) {
         int width = getOwner().getBounds().width;
         int halfOfWidth = width/2;
-        System.out.println("width:" + width);
         this.southPoint = new Point((getOwner().getBounds().getLocation().x + halfOfWidth), getOwner().getBounds().getLocation().y + getOwner().getBounds().height);
         g.setColor(Color.WHITE);
         g.fillRect(southPoint.x-3, southPoint.y -3, 10,10);

@@ -35,8 +35,13 @@ public class Rect extends AbstractRectangularShapedFigure {
 	public void draw(Graphics g) {
 		g.setColor(Color.WHITE);
 		g.fillRect((int) getShape().getX(),(int) getShape().getY(),(int) getShape().getWidth(),(int) getShape().getHeight());
-		g.setColor(Color.BLACK);
+		g.setColor(Color.BLACK );
 		g.drawRect((int) getShape().getX(),(int) getShape().getY(),(int) getShape().getWidth(),(int) getShape().getHeight());
 	}
 
+	@Override
+	public Rect clone() {
+		Rect r = (Rect) super.clone();
+		return r;
+	}
 }

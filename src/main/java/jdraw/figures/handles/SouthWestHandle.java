@@ -1,6 +1,5 @@
 package jdraw.figures.handles;
 
-import jdraw.figures.AbstractFigure;
 import jdraw.framework.DrawView;
 import jdraw.framework.Figure;
 
@@ -11,7 +10,7 @@ public class SouthWestHandle extends AbstractFigureHandle {
     private Point corner;
 
 
-    public SouthWestHandle(AbstractFigure figure) {
+    public SouthWestHandle(Figure figure) {
         super(figure);
     }
 

@@ -1,5 +1,6 @@
 package jdraw.figures;
 
+import jdraw.commands.InsertFigureCommand;
 import jdraw.framework.DrawContext;
 
 import java.awt.*;
@@ -47,6 +48,7 @@ public class OvalTool extends AbstractTool {
         anchor = new Point(x, y);
         newOval = new Oval(x, y, 0, 0);
         getView().getModel().addFigure(newOval);
+        getContext().getModel().getDrawCommandHandler().addCommand( new InsertFigureCommand(getContext().getModel(), newOval));
     }
 
     /**

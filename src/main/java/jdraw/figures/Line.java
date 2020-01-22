@@ -2,8 +2,8 @@ package jdraw.figures;
 
 
 import java.awt.*;
-import java.awt.geom.Point2D;
 import java.awt.geom.Line2D;
+import java.awt.geom.Point2D;
 
 public class Line extends AbstractFigure {
 
@@ -37,5 +37,5 @@ public class Line extends AbstractFigure {
         line2D.setLine(origin, corner);
         notifyListeners();
     }
-
+    
 }

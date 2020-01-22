@@ -5,6 +5,8 @@
 
 package jdraw.figures;
 
+import jdraw.commands.InsertFigureCommand;
+import jdraw.commands.ResizeFigureCommand;
 import jdraw.framework.DrawContext;
 
 import javax.swing.*;
@@ -61,7 +63,9 @@ public class RectTool extends AbstractTool {
 		}
 		anchor = new Point(x, y);
 		newRect = new Rect(x, y, 0, 0);
+		Rect newRect2 = new Rect(x, y, 20, 20);
 		getView().getModel().addFigure(newRect);
+		getContext().getModel().getDrawCommandHandler().addCommand( new InsertFigureCommand(getContext().getModel(), newRect));
 	}
 
 	/**

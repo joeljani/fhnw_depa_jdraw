@@ -1,52 +1,56 @@
 package jdraw.figures;
 
 import jdraw.figures.handles.*;
-import jdraw.framework.Figure;
-import jdraw.framework.FigureEvent;
-import jdraw.framework.FigureHandle;
-import jdraw.framework.FigureListener;
+import jdraw.framework.*;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-public abstract class AbstractFigure implements Figure, Cloneable {
+public class GroupFigure implements Figure, FigureGroup {
 
-    private Shape shape;
-    public String name;
+    private ArrayList<Figure> parts;
+    private final List<FigureHandle> figureHandles = new ArrayList<>();
+    private final List<FigureListener> figureListeners = new CopyOnWriteArrayList<>();
 
-    private  List<FigureListener> figureListeners = new CopyOnWriteArrayList<>();
-    private  List<FigureHandle> figureHandles = new ArrayList<>();
 
-    public AbstractFigure(Shape shape) {
-        this.shape = shape;
+    public GroupFigure(List<Figure> selectedFigures) {
+        if (selectedFigures == null || selectedFigures.size() == 0) throw new IllegalArgumentException();
+        this.parts = new ArrayList<>(selectedFigures);
     }
 
-    public AbstractFigure() {}
+    @Override
+    public void draw(Graphics g) {
+        parts.forEach(f->f.draw(g));
+    }
 
-    public abstract Shape getShape();
+    @Override
+    public void move(int dx, int dy) {
+        if(dx != 0 || dy != 0) {
+            parts.forEach(f->f.move(dx,dy));
+            notifyListeners();
+        }
+    }
 
     @Override
     public boolean contains(int x, int y) {
-        return getShape().contains(x,y);
+        return parts.stream().anyMatch(f -> f.contains(x,y));
+    }
+
+    @Override
+    public void setBounds(Point origin, Point corner) {
+        System.out.println("called");
+        getBounds().setFrameFromDiagonal(origin, corner);
+        notifyListeners();
     }
 
     @Override
     public Rectangle getBounds() {
-        return getShape().getBounds();
-    }
-
-    @Override
-    public Figure clone() {
-        try {
-            AbstractFigure copy = (AbstractFigure) super.clone();
-            copy.figureListeners = new ArrayList<>();
-            copy.figureHandles = new ArrayList<>();
-            return copy;
-        } catch (CloneNotSupportedException e) {
-            throw new InternalError("Couldnt copy");
-        }
+        Rectangle bounds = parts.get(0).getBounds();
+        parts.stream().skip(1).forEach(f -> bounds.add(f.getBounds()));
+        return bounds;
     }
 
     @Override
@@ -54,7 +58,7 @@ public abstract class AbstractFigure implements Figure, Cloneable {
         figureHandles.add(new NorthWestHandle(this));
         figureHandles.add(new NorthHandle(this));
         figureHandles.add(new NorthEastHandle(this));
-       //figureHandles.add(new EastHandle(this));
+        //figureHandles.add(new EastHandle(this));
         figureHandles.add(new SouthEastHandle(this));
         figureHandles.add(new SouthHandle(this));
         figureHandles.add(new SouthWestHandle(this));
@@ -62,10 +66,12 @@ public abstract class AbstractFigure implements Figure, Cloneable {
         return this.figureHandles;
     }
 
+
     @Override
     public void addFigureListener(FigureListener listener) {
         if(!figureListeners.contains(listener)) figureListeners.add(listener);
     }
+
 
     @Override
     public void removeFigureListener(FigureListener listener) {
@@ -75,6 +81,11 @@ public abstract class AbstractFigure implements Figure, Cloneable {
 
     public void notifyListeners() {
         figureListeners.forEach(figureListener -> figureListener.figureChanged(new FigureEvent(this)));
+    }
+
+    @Override
+    public GroupFigure clone() {
+        return null;
     }
 
     @Override
@@ -89,22 +100,23 @@ public abstract class AbstractFigure implements Figure, Cloneable {
 
     @Override
     public boolean isInstanceOf(Class<?> type) {
+        System.out.println("this.getClass()" + this.getClass());
+        System.out.println("param type: " + type);
         return this.getClass() == type;
     }
 
     @Override
     public <T> T getInstanceOf(Class<T> type) {
-        return type.cast(this); // checked version of (T)this
+        return type.cast(this);
     }
-
-
 
     @Override
     public List<FigureListener> getFigureListeners() {
         return this.figureListeners;
     }
-    /******** Figurehandling ********/
 
-
-
+    @Override
+    public Iterable<Figure> getFigureParts() {
+        return Collections.unmodifiableList(parts);
+    }
 }

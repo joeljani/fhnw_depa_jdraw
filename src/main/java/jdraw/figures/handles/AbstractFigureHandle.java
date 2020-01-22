@@ -1,16 +1,15 @@
 package jdraw.figures.handles;
 
-import jdraw.figures.AbstractFigure;
+import jdraw.framework.Figure;
 import jdraw.framework.FigureHandle;
 
-public abstract class AbstractFigureHandle implements FigureHandle {
+public abstract class AbstractFigureHandle implements FigureHandle, Cloneable {
 
-    private AbstractFigure figure;
+    private Figure figure;
     private HandleState state;
 
-    public AbstractFigureHandle(AbstractFigure abstractFigure) {
-        this.figure = abstractFigure;
-        setState(new UnchangedState());
+    public AbstractFigureHandle(Figure figure) {
+        this.figure = figure;
     }
 
     public void setState(HandleState state) {
@@ -21,7 +20,7 @@ public abstract class AbstractFigureHandle implements FigureHandle {
         return state;
     }
 
-    public AbstractFigure getFigure() {
+    public Figure getFigure() {
         return figure;
     }
 }

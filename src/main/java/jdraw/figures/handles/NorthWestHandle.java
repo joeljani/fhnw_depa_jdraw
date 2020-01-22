@@ -1,6 +1,5 @@
 package jdraw.figures.handles;
 
-import jdraw.figures.AbstractFigure;
 import jdraw.framework.DrawView;
 import jdraw.framework.Figure;
 
@@ -11,7 +10,7 @@ public class NorthWestHandle extends AbstractFigureHandle {
 
     private Point corner;
 
-    public NorthWestHandle(AbstractFigure figure) {
+    public NorthWestHandle(Figure figure) {
         super(figure);
     }
 
@@ -47,6 +46,7 @@ public class NorthWestHandle extends AbstractFigureHandle {
 
     @Override
     public void startInteraction(int x, int y, MouseEvent e, DrawView v) {
+        System.out.println("started");
         corner = new Point(getOwner().getBounds().x + getOwner().getBounds().width,
                            getOwner().getBounds().y + getOwner().getBounds().height);
     }

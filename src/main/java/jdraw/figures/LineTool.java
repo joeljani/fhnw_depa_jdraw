@@ -5,6 +5,7 @@
 
 package jdraw.figures;
 
+import jdraw.commands.InsertFigureCommand;
 import jdraw.framework.DrawContext;
 
 import java.awt.*;
@@ -61,6 +62,7 @@ public class LineTool extends AbstractTool {
         anchor = new Point(x, y);
         newLine = new Line(x, y, 0, 0);
         getView().getModel().addFigure(newLine);
+        getContext().getModel().getDrawCommandHandler().addCommand( new InsertFigureCommand(getContext().getModel(), newLine));
     }
 
     /**

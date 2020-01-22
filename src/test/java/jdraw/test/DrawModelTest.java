@@ -28,6 +28,18 @@ public class DrawModelTest {
 		@Override public void addFigureListener(FigureListener listener) { }
 		@Override public void removeFigureListener(FigureListener listener) { }
 		@Override public Figure clone() { return null;}
+		@Override public boolean isSame(Figure other) {
+			return false;
+		}
+		@Override public boolean isInstanceOf(Class<?> type) {
+			return false;
+		}
+		@Override public Figure getInstanceOf(Class<?> type) {
+			return null;
+		}
+		@Override public List<FigureListener> getFigureListeners() {
+			return null;
+		}
 	}
 
 	private DrawModel m;

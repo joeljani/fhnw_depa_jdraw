@@ -107,4 +107,24 @@ public interface Figure extends Serializable, Cloneable {
 	 * @return clone of figure
 	 */
 	Figure clone();
+
+	/**
+	 * Checks if another Figure stems from original figure
+	 * @param other
+	 * @return True if yes false if no
+	 */
+	boolean isSame(Figure other);
+
+	boolean isSameImpl(Figure other);
+
+	/**
+	 * Checks if original figure is an instance of other figure
+	 * @param other
+	 * @return True if yes false if no
+	 */
+	boolean isInstanceOf(Class<?> type); //nicht besser hasInstanceOf??
+
+	<T> T getInstanceOf(Class<T> type);
+
+	List<FigureListener> getFigureListeners();
 }

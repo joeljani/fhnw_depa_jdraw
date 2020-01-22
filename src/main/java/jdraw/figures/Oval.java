@@ -8,6 +8,8 @@ public class Oval extends AbstractRectangularShapedFigure {
 
     public Oval(int x, int y, int dx, int dy) {
         super(new Ellipse2D.Float(0,0,0,0));
+        this.name = "roundy";
+        System.out.println(this.name);
     }
 
     @Override

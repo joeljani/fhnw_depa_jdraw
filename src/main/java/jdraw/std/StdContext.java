@@ -4,9 +4,11 @@
  */
 package jdraw.std;
 
-import jdraw.figures.LineTool;
-import jdraw.figures.OvalTool;
-import jdraw.figures.RectTool;
+import jdraw.figures.*;
+import jdraw.figures.decorators.AbstractDecorator;
+import jdraw.figures.decorators.LogDecorator;
+import jdraw.figures.decorators.FillRedDecorator;
+import jdraw.figures.decorators.GreenDecorator;
 import jdraw.framework.*;
 import jdraw.grid.Grid20;
 import jdraw.grid.Grid50;
@@ -30,6 +32,9 @@ import java.util.stream.Collectors;
  */
 @SuppressWarnings("serial")
 public class StdContext extends AbstractContext {
+
+    private List<Figure> clipboard = new ArrayList<>();
+
     /**
      * Constructs a standard context with a default set of drawing tools.
      * @param view the view that is displaying the actual drawing.
@@ -90,9 +95,30 @@ public class StdContext extends AbstractContext {
         );
 
         editMenu.addSeparator();
-        editMenu.add("Cut").setEnabled(false);
-        editMenu.add("Copy").setEnabled(false);
-        editMenu.add("Paste").setEnabled(false);
+        JMenuItem cut = new JMenuItem("Cut");
+        cut.addActionListener(e -> System.out.println("cut"));
+
+        JMenuItem copy = new JMenuItem("Copy");
+        copy.addActionListener(e -> System.out.println("copied"));
+        copy.addActionListener(e -> clipboard = getView().getSelection()
+                                    .stream()
+                                    .map(Figure::clone)
+                                    .collect(Collectors.toList()));
+
+        JMenuItem paste = new JMenuItem("Paste");
+        paste.addActionListener(e -> {
+                    System.out.println("pasted");
+                    for (Figure f : clipboard) {
+                        getModel().addFigure(f);
+                        getView().getSelection().add(f);
+                        f.move(10, 10);
+                    }
+                    showStatusText("Eingefügt");
+                });
+
+        editMenu.add(cut);
+        editMenu.add(copy);
+        editMenu.add(paste);
 
         editMenu.addSeparator();
         JMenuItem clear = new JMenuItem("Clear");
@@ -103,12 +129,34 @@ public class StdContext extends AbstractContext {
 
         editMenu.addSeparator();
         JMenuItem group = new JMenuItem("Group");
-        group.setEnabled(false);
+        group.addActionListener(e -> {
+            List<Figure> figuresToGroup = getView().getSelection();
+            if(figuresToGroup != null && figuresToGroup.size() >= 2) {
+                GroupFigure groupFigure = new GroupFigure(figuresToGroup);
+                figuresToGroup.stream().forEach(figure -> getModel().removeFigure(figure));
+                getModel().addFigure(groupFigure);
+                getView().addToSelection(groupFigure);
+            }
+        });
         editMenu.add(group);
 
         JMenuItem ungroup = new JMenuItem("Ungroup");
-        ungroup.setEnabled(false);
         editMenu.add(ungroup);
+        ungroup.addActionListener(e -> {
+            getView().getSelection()
+                    .stream()
+                    .filter(figure -> figure.isInstanceOf(GroupFigure.class)) //there exists a groupfigure (undearneath the decorators)
+                    .forEach(groupFigure -> {
+                        System.out.println(groupFigure.getClass());
+                        GroupFigure groupToDissolve = groupFigure.getInstanceOf(GroupFigure.class); //get the groupfigure
+                        groupToDissolve.getFigureParts().forEach(part -> {
+                            getModel().addFigure(part);
+                            getView().addToSelection(part);
+                        });
+                        getModel().removeFigure(groupFigure);
+                        getView().removeFromSelection(groupFigure);
+                    });
+        });
 
         editMenu.addSeparator();
 
@@ -150,6 +198,58 @@ public class StdContext extends AbstractContext {
         snapGrid.addActionListener(e -> grids.stream().filter(g -> g.getText() != "SnapGrid").forEach(g -> g.setSelected(false)));
         noGrid.addActionListener(e -> grids.stream().filter(g -> g.getText() != "Kein Grid").forEach(g -> g.setSelected(false)));
 
+        JMenuItem greenDecorator = new JMenuItem("Toggle Green Decorator");
+        editMenu.add(greenDecorator);
+        greenDecorator.addActionListener(e -> {
+            getView().getSelection().stream().forEach(figure -> {
+                if(figure.isInstanceOf(GreenDecorator.class)) {
+                    GreenDecorator greenDec = figure.getInstanceOf(GreenDecorator.class); //get the GreenDecorator
+                    if(greenDec.getOuter() != null) {
+                        ((AbstractDecorator) greenDec.getOuter()).setInner(greenDec.getInner());
+                        deleteDecorator(greenDec, greenDec.getOuter());
+                    } else replaceOldWithNewFigure(figure, ((AbstractDecorator) figure).getInner());
+                } else {
+                    replaceOldWithNewFigure(figure, new GreenDecorator(figure, null));
+                }
+            });
+                }
+        );
+
+        JMenuItem redFillerDecorator = new JMenuItem("Toggle Redfiller Decorator");
+        editMenu.add(redFillerDecorator);
+        redFillerDecorator.addActionListener(e -> {
+                    getView().getSelection().stream().forEach(figure -> {
+                        if(figure.isInstanceOf(FillRedDecorator.class)) {
+                            FillRedDecorator fillRedDec = figure.getInstanceOf(FillRedDecorator.class); //get the FillRedDecorator
+                            if(fillRedDec.getOuter() != null) {
+                                ((AbstractDecorator) fillRedDec.getOuter()).setInner(fillRedDec.getInner());
+                                deleteDecorator(fillRedDec, fillRedDec.getOuter());
+                            } else replaceOldWithNewFigure(figure, ((AbstractDecorator) figure).getInner());
+                        } else {
+                            replaceOldWithNewFigure(figure, new FillRedDecorator(figure, null));
+                        }
+                    });
+                }
+        );
+
+        JMenuItem logDecorator = new JMenuItem("Toggle logDecorator");
+        editMenu.add(logDecorator);
+        logDecorator.addActionListener(e -> {
+                    getView().getSelection().stream().forEach(figure -> {
+                        if(figure.isInstanceOf(LogDecorator.class)) { //nicht besser hasInstanceOf??
+                            LogDecorator logDec = figure.getInstanceOf(LogDecorator.class); //get the LogDecorator
+                            if(logDec.getOuter() != null) {
+                                ((AbstractDecorator) logDec.getOuter()).setInner(logDec.getInner());
+                                deleteDecorator(logDec, logDec.getOuter());
+                            } else replaceOldWithNewFigure(figure, ((AbstractDecorator) figure).getInner());
+                        } else {
+                            System.out.println("logDecorator activated");
+                            replaceOldWithNewFigure(figure, new LogDecorator(figure, null));
+                        }
+                    });
+                }
+        );
+
 
         grid.add(noGrid);
         grid.add(grid20);
@@ -158,6 +258,21 @@ public class StdContext extends AbstractContext {
         editMenu.add(grid);
 
         return editMenu;
+    }
+
+    private void replaceOldWithNewFigure(Figure old, Figure decorated) {
+        if(old instanceof AbstractDecorator) ((AbstractDecorator) old).setOuter(decorated);
+        getView().removeFromSelection(old);
+        getModel().removeFigure(old);
+        getModel().addFigure(decorated);
+        getView().addToSelection(decorated);
+    }
+
+    private void deleteDecorator(Figure decorator, Figure outer) {
+        getView().removeFromSelection(decorator);
+        getModel().removeFigure(decorator);
+        getView().addToSelection(outer);
+        getView().repaint();
     }
 
     /**

@@ -15,6 +15,7 @@ import jdraw.framework.DrawCommandHandler;
  * @author Christoph. Denzler
  *
  */
+@Deprecated
 public class EmptyDrawCommandHandler implements DrawCommandHandler {
 
 	@Override
@@ -24,7 +25,9 @@ public class EmptyDrawCommandHandler implements DrawCommandHandler {
 	public void undo() { /* do nothing. */ }
 
 	@Override
-	public void redo() { /* do nothing. */ }
+	public void redo() {
+		System.out.println("rediiddd!!");
+	}
 
 	@Override
 	public boolean undoPossible() { return false; }

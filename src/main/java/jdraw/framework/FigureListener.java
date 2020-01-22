@@ -15,7 +15,7 @@ import java.util.EventListener;
  * @author  Dominik Gruntz &amp; Christoph Denzler
  * @version 2.5
  */
-public interface FigureListener extends EventListener {
+public interface FigureListener extends EventListener, Cloneable {
 
 	/**
 	 * Sent when a figure has changed.

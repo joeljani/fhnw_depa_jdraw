@@ -5,30 +5,16 @@
 
 package jdraw.std;
 
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
-import java.awt.Point;
-import java.awt.Rectangle;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
+import jdraw.commands.InsertFigureCommand;
+import jdraw.commands.RemoveSelectionCommand;
+import jdraw.commands.ResizeFigureCommand;
+import jdraw.framework.*;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.swing.JComponent;
-
-import jdraw.framework.DrawContext;
-import jdraw.framework.DrawModel;
-import jdraw.framework.DrawModelEvent;
-import jdraw.framework.DrawModelListener;
-import jdraw.framework.DrawView;
-import jdraw.framework.Figure;
-import jdraw.framework.FigureHandle;
-import jdraw.framework.DrawGrid;
 
 /**
  * Standard implementation of interface DrawView.
@@ -54,6 +40,8 @@ public final class StdDrawView extends JComponent implements DrawView {
 	private List<FigureHandle> handles = new LinkedList<>();
 	/** Send changes to this listener. */
 	private DrawModelListener ml;
+	/** Current figurebounds for resize command */
+	private Rectangle currentFigureBounds;
 
 	/**
 	 * Indicates whether a mouse interaction is active. If dragging is active then
@@ -69,6 +57,7 @@ public final class StdDrawView extends JComponent implements DrawView {
 	 */
 	public StdDrawView(DrawModel aModel) {
 
+		System.out.println("created new view");
 		this.model = aModel;
 
 		ml = e -> {
@@ -77,6 +66,7 @@ public final class StdDrawView extends JComponent implements DrawView {
 				revalidate();
 
 				if (e.getType() == DrawModelEvent.Type.FIGURE_REMOVED) {
+					System.out.println("figure removed");
 					removeFromSelection(e.getFigure());
 				}
 				if (e.getType() == DrawModelEvent.Type.DRAWING_CLEARED) {
@@ -101,6 +91,10 @@ public final class StdDrawView extends JComponent implements DrawView {
 		addMouseMotionListener(ieh);
 
 		addKeyListener(ieh);
+	}
+
+	public void modelChangeListenerAction() {
+
 	}
 
 	@Override
@@ -196,8 +190,9 @@ public final class StdDrawView extends JComponent implements DrawView {
 
 	@Override
 	public void removeFromSelection(Figure f) {
+		System.out.println(f);
 		if (selection.remove(f)) {
-			handles.removeIf(h -> h.getOwner() == f);
+			handles.removeIf(h -> f.isSame(h.getOwner()));
 		}
 	}
 
@@ -278,8 +273,8 @@ public final class StdDrawView extends JComponent implements DrawView {
 			int code = e.getKeyCode();
 			if (code == KeyEvent.VK_DELETE || code == KeyEvent.VK_BACK_SPACE) {
 				model.getDrawCommandHandler().beginScript();
+				model.getDrawCommandHandler().addCommand(new RemoveSelectionCommand(model, getSelection()));
 				for (Figure f : getSelection()) {
-					model.getDrawCommandHandler().addCommand(new RemoveFigureCommand(model, f));
 					model.removeFigure(f);
 					// as a consequence, the figure is also removed from the selection
 				}
@@ -331,6 +326,11 @@ public final class StdDrawView extends JComponent implements DrawView {
 		public void mousePressed(MouseEvent e) {
 			requestFocus();
 			Point p = constrainPoint(new Point(e.getX(), e.getY()), 1);
+			for (FigureHandle h : handles) {
+				if (h.contains(e.getX(), e.getY())) {
+					currentFigureBounds = h.getOwner().getBounds();
+				}
+			}
 			if (dragging) {
 				// mouse was pressed during dragging, e.g. another mouse button.
 				context.getTool().mouseDrag(p.x, p.y, e);
@@ -344,6 +344,13 @@ public final class StdDrawView extends JComponent implements DrawView {
 		@Override
 		public void mouseReleased(MouseEvent e) {
 			if (dragging) {
+				for (FigureHandle h : handles) {
+					if (h.contains(e.getX(), e.getY())) {
+						Rectangle newFigureBounds = h.getOwner().getBounds();
+						context.getModel().getDrawCommandHandler().addCommand(
+								new ResizeFigureCommand(getContext().getModel(), currentFigureBounds, newFigureBounds));
+					}
+				}
 				Point p = constrainPoint(new Point(e.getX(), e.getY()), 2);
 				if ((e.getModifiersEx() & InputEvent.BUTTON1_DOWN_MASK) == 0) {
 					dragging = false;

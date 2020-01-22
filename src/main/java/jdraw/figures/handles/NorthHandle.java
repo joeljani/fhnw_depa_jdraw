@@ -1,6 +1,5 @@
 package jdraw.figures.handles;
 
-import jdraw.figures.AbstractFigure;
 import jdraw.framework.DrawView;
 import jdraw.framework.Figure;
 
@@ -12,7 +11,7 @@ public class NorthHandle extends AbstractFigureHandle {
     private Point corner;
     private Point northPoint;
 
-    public NorthHandle(AbstractFigure figure) {
+    public NorthHandle(Figure figure) {
         super(figure);
     }
 

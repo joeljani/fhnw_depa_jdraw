@@ -13,6 +13,9 @@ public abstract class AbstractRectangularShapedFigure extends AbstractFigure {
         this.shape = shape;
     }
 
+
+    public AbstractRectangularShapedFigure() {}
+
     @Override
     public void move(int dx, int dy) {
         if(!(dx == 0 && dy == 0)) {

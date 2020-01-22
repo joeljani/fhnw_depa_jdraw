@@ -5,15 +5,13 @@
 
 package jdraw.std;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Observer;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
+import jdraw.commands.StdDrawCommandHandler;
 import jdraw.framework.*;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.Stream;
 
 /**
  * Provide a standard behavior for the drawing model. This class initially does not implement the methods
@@ -35,6 +33,7 @@ public class StdDrawModel implements DrawModel, FigureListener {
 			f.addFigureListener(this);
 			notifyListeners(f, DrawModelEvent.Type.FIGURE_ADDED);
 		}
+
 	}
 
 	@Override
@@ -61,9 +60,7 @@ public class StdDrawModel implements DrawModel, FigureListener {
 		drawModelListeners.remove(listener);
 	}
 
-	/** The draw command handler. Initialized here with a dummy implementation. */
-	// TODO initialize with your implementation of the undo/redo-assignment.
-	private DrawCommandHandler handler = new EmptyDrawCommandHandler();
+	private DrawCommandHandler handler = new StdDrawCommandHandler();
 
 	/**
 	 * Retrieve the draw command handler in use.

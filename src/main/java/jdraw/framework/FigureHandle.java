@@ -20,7 +20,7 @@ import java.awt.event.MouseEvent;
  * @author Dominik Gruntz &amp; Christoph Denzler
  * @version 2.5
  */
-public interface FigureHandle {
+public interface FigureHandle extends Cloneable {
 
 	/**
 	 * Gets the handle's owner.
@@ -95,4 +95,8 @@ public interface FigureHandle {
 	 * @param v the view in which the interaction is performed
 	 */
 	void stopInteraction(int x, int y, MouseEvent e, DrawView v);
+
+
+
+
 }
