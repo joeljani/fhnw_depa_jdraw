@@ -24,7 +24,9 @@
 				<ref bean="line"/>
 				<null></null>
 				<ref bean="rectangle"/>
+				<null></null>
 				<ref bean="oval"/>
+				<null></null>
 			</list>
 		</constructor-arg>
 	</bean>

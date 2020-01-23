@@ -305,8 +305,10 @@ public class StdContext extends AbstractContext {
     protected void doRegisterDrawTools() {
         getToolFactories()
                 .stream()
-                .filter(Objects::nonNull)
-                .forEach(concreteToolFactory -> addTool(concreteToolFactory.createTool(this)));
+                .forEach(concreteToolFactory -> {
+                    if(concreteToolFactory == null) addTool(null);
+                    else addTool(concreteToolFactory.createTool(this));
+                });
     }
 
     /**
