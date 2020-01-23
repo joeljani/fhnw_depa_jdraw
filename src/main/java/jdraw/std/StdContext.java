@@ -21,6 +21,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -302,12 +303,10 @@ public class StdContext extends AbstractContext {
 
     @Override
     protected void doRegisterDrawTools() {
-        DrawTool rectangleTool = new RectTool(this, "Rectangle", "rectangle.png");
-        DrawTool lineTool = new LineTool(this, "Line", "line.png");
-        DrawTool ovalTool = new OvalTool(this, "Oval", "oval.png");
-        addTool(rectangleTool);
-        addTool(lineTool);
-        addTool(ovalTool);
+        getToolFactories()
+                .stream()
+                .filter(Objects::nonNull)
+                .forEach(concreteToolFactory -> addTool(concreteToolFactory.createTool(this)));
     }
 
     /**

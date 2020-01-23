@@ -6,7 +6,9 @@
 	<bean id="drawModel" class="jdraw.std.StdDrawModel"/>
 
 	<bean id="drawView" class="jdraw.std.StdDrawView" scope="prototype">
-		<constructor-arg><ref bean="drawModel"/></constructor-arg>
+		<constructor-arg>
+			<ref bean="drawModel"/>
+		</constructor-arg>
 	</bean>
 
 	<bean id="drawContext" class="jdraw.std.StdContext" scope="prototype"
@@ -19,31 +21,30 @@
 
 		<constructor-arg>
 			<list>	<!-- null represents a separator -->
-
-				<!--<ref bean="line"/>
+				<ref bean="line"/>
+				<null></null>
 				<ref bean="rectangle"/>
-				<ref bean="oval"/>-->
-
+				<ref bean="oval"/>
 			</list>
 		</constructor-arg>
 	</bean>
 
+	<bean id="oval" class="jdraw.figures.toolFactories.OvalToolFactory">
+		<property name="name"><value>Oval</value></property>
+		<property name="iconName"><value>oval.png</value></property>
+	</bean>
 
-<!--
-	<bean id="rectangle" class="jdraw.figures.RectangleToolFactory">
-		<property name="rect"><value>Rectangle</value></property>
+	<bean id="rectangle" class="jdraw.figures.toolFactories.RectangleToolFactory">
+		<property name="name"><value>Rectangle</value></property>
 		<property name="iconName"><value>rectangle.png</value></property>
-	</bean>-->
+	</bean>
 	
-<!--	<bean id="line" class="jdraw.figures.LineToolFactory">
+	<bean id="line" class="jdraw.figures.toolFactories.LineToolFactory">
 		<property name="name"><value>Line</value></property>
 		<property name="iconName"><value>line.png</value></property>
 	</bean>
 
-	<bean id="oval" class="jdraw.figures.OvalToolFactory">
-		<property name="name"><value>Oval</value></property>
-		<property name="iconName"><value>oval.png</value></property>
-	</bean>-->
+
 
 
 </beans>

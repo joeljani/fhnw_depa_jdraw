@@ -17,7 +17,7 @@ public class GreenDecoratorTest extends AbstractFigureTest {
 
     @Override
     Figure createFigure() {
-        return new GreenDecorator(new Rect(20,20,20,20));
+        return new GreenDecorator(new Rect(20,20,20,20), null);
     }
 
     @BeforeEach
