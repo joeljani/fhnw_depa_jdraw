@@ -119,7 +119,7 @@ public interface Figure extends Serializable, Cloneable {
 
 	/**
 	 * Checks if original figure is an instance of other figure
-	 * @param other
+	 * @param type
 	 * @return True if yes false if no
 	 */
 	boolean isInstanceOf(Class<?> type); //nicht besser hasInstanceOf??
